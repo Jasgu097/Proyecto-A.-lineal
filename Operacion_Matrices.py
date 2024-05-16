@@ -8,6 +8,7 @@ def pedir_matriz(filas, columnas):
         matriz.append(fila)
     return matriz
 
+
 def sumar_matrices(matriz1, matriz2):
     suma = []
     for i in range(len(matriz1)):
@@ -17,6 +18,7 @@ def sumar_matrices(matriz1, matriz2):
         suma.append(fila_suma)
     return suma
 
+
 def restar_matrices(matriz1, matriz2):
     resta = []
     for i in range(len(matriz1)):
@@ -25,6 +27,7 @@ def restar_matrices(matriz1, matriz2):
             fila_resta.append(matriz1[i][j] - matriz2[i][j])
         resta.append(fila_resta)
     return resta
+
 
 def multiplicar_matrices(matriz1, matriz2):
     if len(matriz1[0]) != len(matriz2):
@@ -42,9 +45,11 @@ def multiplicar_matrices(matriz1, matriz2):
         resultado.append(fila_resultado)
     return resultado
 
+
 def mostrar_matriz(matriz):
     for fila in matriz:
         print(fila)
+
 
 def main():
     filas1 = int(input("Ingrese el número de filas de la matriz 1: "))
