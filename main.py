@@ -1,24 +1,35 @@
-Salir=False
-while not Salir:
-    print("__________Menu__________")
-    eleccion=input("1. Operaciones entre matricez\n2. Matriz iversa\n3. Determiante de una matriz\n4. Rango de una matriz\n5. Cifrado por matricez\n6. Cadenas de markov\n7. Operaciones con vectores\n8. Salir\nPorfavor ingrese una opcion: ")
-    if eleccion=="1":
-        import Operacion_Matrices #//
-    elif eleccion=="2":
-        import Matriz_Inversa #//
-    elif eleccion=="3":
-        import Determinante_matriz
-    elif eleccion=="4":
-        import Rango_Matriz
-    elif eleccion=="5":
-        import Codificacion #//
-    elif eleccion=="6":
-        import Cadena_Markov #//
-    elif eleccion=="7":
-        import Operacion_Vectores
-    elif eleccion=="8":
-        Salir=True
-    else:
-        print("Operacion no valida porfavor ingrese una valor valido")
+import tkinter as tk
+from Operacion_Matrices import operaciones_matrices
+from Matriz_Inversa import matriz_inversa
 
+# Funciones dummy para las otras operaciones
+def dummy_function():
+    tk.messagebox.showinfo("Info", "Esta función aún no está implementada.")
 
+# Configuración de la ventana principal
+root = tk.Tk()
+root.title("Menú de Operaciones con Matrices y Vectores")
+root.geometry("400x500")
+
+# Título del menú
+label_title = tk.Label(root, text="Menú de Operaciones", font=("Arial", 20))
+label_title.pack(pady=20)
+
+# Botones para cada opción del menú
+buttons = [
+    ("Operaciones entre matrices", lambda: operaciones_matrices(root)),
+    ("Matriz inversa", lambda: matriz_inversa(root)),
+    ("Determinante de una matriz", dummy_function),
+    ("Rango de una matriz", dummy_function),
+    ("Cifrado por matrices", dummy_function),
+    ("Cadenas de Markov", dummy_function),
+    ("Operaciones con vectores", dummy_function),
+    ("Salir", root.destroy)
+]
+
+for (text, command) in buttons:
+    button = tk.Button(root, text=text, command=command, font=("Arial", 14))
+    button.pack(fill=tk.X, pady=5, padx=20)
+
+# Iniciar el bucle principal de la interfaz gráfica
+root.mainloop()
