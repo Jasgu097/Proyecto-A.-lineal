@@ -1,4 +1,7 @@
-import numpy as np  # Importamos numpy para calcular la inversa de la matriz
+import numpy as np
+import tkinter as tk
+from tkinter import messagebox
+
 
 class Codificacion:
     def __init__(self):
@@ -10,105 +13,77 @@ class Codificacion:
             if letra == ' ':
                 matriz.append(27)  # Espacio en blanco corresponde a 27
             else:
-                # Restamos el código ASCII de 'a' (97) para obtener la posición relativa de la letra en el alfabeto
                 numero_letra = ord(letra.lower()) - 96
                 matriz.append(numero_letra)
 
-        # Llenar con espacios en blanco si es necesario para que la matriz tenga 3 filas
         while len(matriz) % 3 != 0:
             matriz.append(27)
 
-        # Crear la matriz de 3 filas
         matriz_3_filas = [matriz[i:i + 3] for i in range(0, len(matriz), 3)]
+        matriz_transpuesta = np.transpose(matriz_3_filas).tolist()
 
-        self.conteo = len(matriz_3_filas)  # Actualizar el conteo de filas
-        return matriz_3_filas
+        self.conteo = len(matriz_3_filas)
+        return matriz_transpuesta, matriz
 
     def multiplicar_matrices(self, matriz1, matriz2):
-        resultado = []
-        for i in range(self.conteo):
-            fila = []
-            for j in range(3):
-                suma = 0
-                for k in range(3):
-                    suma += matriz1[i][k] * matriz2[k][j]
-                fila.append(suma)
-            resultado.append(fila)
+        resultado = np.dot(matriz1, matriz2).tolist()
         return resultado
 
-    def inversa_matriz(self, matriz):
-        try:
-            matriz_np = np.array(matriz)
-            inversa_np = np.linalg.inv(matriz_np)
-            inversa = inversa_np.tolist()
-            return inversa
-        except np.linalg.LinAlgError:
-            return "No se puede calcular la inversa de una matriz singular."
 
-    def transpuesta_matriz(self, matriz):
-        transpuesta = [[fila[i] for fila in matriz] for i in range(len(matriz[0]))]
-        return transpuesta
+def cifrado_matrices(root):
+    ventana_cifrado = tk.Toplevel(root)
+    ventana_cifrado.title("Cifrado por Matrices")
+    ventana_cifrado.geometry("700x600")
 
-codificador = Codificacion()
+    codificador = Codificacion()
 
-nombre_usuario = input("Ingrese un nombre: ")
-matriz_nombre = codificador.nombre_a_matriz(nombre_usuario)
-"""
-for i in matriz_nombre:
-    print(i)
-print("Ingrese una matriz de 3x3, separando los números por espacios:")
-"""
+    tk.Label(ventana_cifrado, text="Ingrese un nombre:", font=("Arial", 14)).pack(pady=10)
+    entrada_nombre = tk.Entry(ventana_cifrado, width=30, font=("Arial", 14))
+    entrada_nombre.pack(pady=10)
 
-matriz_usuario = []
+    tk.Label(ventana_cifrado, text="Ingrese una matriz de 3x3 (dejar vacíos para valores cero):",
+             font=("Arial", 14)).pack(pady=10)
+    entradas_matriz = []
+    frame_entradas = tk.Frame(ventana_cifrado)
+    frame_entradas.pack(pady=10)
 
-for i in range(3):
-    fila = input(f"Ingrese los 3 números de la columna {i + 1}: ").split()
-    fila = [int(num) for num in fila]
-    matriz_usuario.append(fila)
+    for i in range(3):
+        fila = []
+        for j in range(3):
+            entrada = tk.Entry(frame_entradas, width=5, font=("Arial", 14))
+            entrada.grid(row=i, column=j, padx=5, pady=5)
+            fila.append(entrada)
+        entradas_matriz.append(fila)
 
+    def obtener_valores_y_calcular():
+        nombre_usuario = entrada_nombre.get()
+        if not nombre_usuario:
+            messagebox.showerror("Error", "Debe ingresar un nombre.")
+            return
 
-a=Codificacion()
-transpuesta_a=a.transpuesta_matriz(matriz_nombre)
-print("Matriz de nombre a numeros:")
-for i in transpuesta_a:
-    print(i)
-print("___________________")
+        matriz_nombre, nombre_numeros = codificador.nombre_a_matriz(nombre_usuario)
 
-resultado_multiplicacion = codificador.multiplicar_matrices(matriz_nombre, matriz_usuario)
-"""
-print("Matriz resultante de la multiplicación:")
-for fila in resultado_multiplicacion:
-    print(fila)
-"""
-transpuesta_a=a.transpuesta_matriz(resultado_multiplicacion)
-print("Resultado de la multiplicacion de la clave con la matriz nombre: ")
-for i in transpuesta_a:
-    print(i)
-print("___________________")
-# Calculamos la inversa de la matriz proporcionada por el usuario
-inversa_usuario = codificador.inversa_matriz(matriz_usuario)
-print("Inversa de la matriz proporcionada por el usuario:")
-transpuesta_a=a.transpuesta_matriz(inversa_usuario)
-for i in transpuesta_a:
-    print(i)
-print("__________________")
-"""
-if isinstance(inversa_usuario, str):
-    print(inversa_usuario)
-else:
-    for fila in inversa_usuario:
-        print(fila)
-"""
+        matriz_usuario = []
+        for fila in entradas_matriz:
+            matriz_fila = []
+            for entrada in fila:
+                valor = entrada.get()
+                if valor:
+                    matriz_fila.append(float(valor))
+                else:
+                    matriz_fila.append(0.0)
+            matriz_usuario.append(matriz_fila)
 
-# Multiplicamos la inversa de la matriz del usuario con el resultado de la primera multiplicación
-if not isinstance(inversa_usuario, str):
-    resultado_final = codificador.multiplicar_matrices(resultado_multiplicacion,inversa_usuario)
-    print("Matriz resultante de la multiplicación entre la inversa de la matriz usuario y el resultado de la primera multiplicación:")
-    transpuesta_a=a.transpuesta_matriz(resultado_final)
-    """
-    for fila in resultado_final:
-        print(fila)
-    """
-    for i in transpuesta_a:
-        print(i)
-    print("__________________")
+        matriz_usuario_np = np.array(matriz_usuario)
+        resultado_multiplicacion = codificador.multiplicar_matrices(matriz_usuario_np, matriz_nombre)
+
+        nombre_numeros_str = "Nombre convertido a números:\n" + str(nombre_numeros) + "\n"
+        matriz_nombre_str = "Matriz del nombre (3 filas horizontales):\n" + "\n".join(
+            ["\t".join(map(str, fila)) for fila in matriz_nombre]) + "\n"
+        resultado_str = "Matriz codificada (3 filas horizontales):\n" + "\n".join(
+            ["\t".join([f"{round(elemento, 4)}" for elemento in fila]) for fila in resultado_multiplicacion])
+
+        messagebox.showinfo("Resultado", nombre_numeros_str + matriz_nombre_str + resultado_str)
+
+    tk.Button(ventana_cifrado, text="Calcular", command=obtener_valores_y_calcular, font=("Arial", 14)).pack(pady=20)
+    tk.Button(ventana_cifrado, text="Salir", command=ventana_cifrado.destroy, font=("Arial", 14)).pack(pady=10)

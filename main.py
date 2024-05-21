@@ -2,6 +2,7 @@ import tkinter as tk
 from Operacion_Matrices import operaciones_matrices
 from Matriz_Inversa import matriz_inversa
 from Cadena_Markov import transposicion_acumulada
+from Codificacion import cifrado_matrices
 
 # Funciones dummy para las otras operaciones
 def dummy_function():
@@ -22,7 +23,7 @@ buttons = [
     ("Matriz inversa", lambda: matriz_inversa(root)),
     ("Determinante de una matriz", dummy_function),
     ("Rango de una matriz", dummy_function),
-    ("Cifrado por matrices", dummy_function),
+    ("Cifrado por matrices", lambda: cifrado_matrices(root)),
     ("Cadenas de Markov", lambda: transposicion_acumulada(root)),
     ("Operaciones con vectores", dummy_function),
     ("Salir", root.destroy)
