@@ -1,23 +1,41 @@
-x1=int(input("Ingrese el valor con x de la primera ecuacion: "))
-y1=int(input("Ingrese el valor con Y de la primera ecuacion: "))
-z1 = int(input("Ingrese el valor con z de la primera ecuacion: "))
-r1 = int(input("Ingrese el valor del resultado de la primera ecuacion: "))
-x2 = int(input("Ingrese el valor con x de la segunda ecuacion: "))
-y2 = int(input("Ingrese el valor con Y de la segunda ecuacion: "))
-z2 = int(input("Ingrese el valor con z de la segunda ecuacion: "))
-r2 = int(input("Ingrese el valor del resultado de la segunda ecuacion: "))
-x3 = int(input("Ingrese el valor con x de la tercera ecuacion: "))
-y3 = int(input("Ingrese el valor con Y de la tercera ecuacion: "))
-z3 = int(input("Ingrese el valor con z de la tercera ecuacion: "))
-r3 = int(input("Ingrese el valor del resultado de la tercera ecuacion: "))
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+import numpy as np
 
-print(" equ1",x1,"X + (",y1,")Y + (",z1,")Z =",r1,"\n equ2",x2,"X + (",y2,")Y + (",z2,")Z =",r2,"\n equ3",x3,"X + (",y3,")Y + (",z3,")Z =",r3)
-print("_______________________________")
-print(" equ1",x1,"X + (",y1,")Y + (",z1,")Z =",r1,"\n equ2",0,"X + (",-1*x1*y2+(x2*y1),")Y + (",-1*x1*z2+(x2*z1),")Z =",-1*x1*r2+(x2*r1),"|",x2,"equ1 -",x1,"equi2\n equ3",0,"X + (",-1*x1*y3+(x3*y1),")Y + (",-1*x1*z3+(x3*z1),")Z =",-1*x1*r3+(x3*r1),"|",x3,"equ1 -",x1,"equi3")
-print("_______________________________")
-print(" equ1",x2*x1,"X + (",x2*y1,")Y =",x2*z1,"\n equ2",-1*x1*x2,"X + (",-1*x1*y2,")Y =",-1*x1*z2)
-print(" equ3",x2*y1+(-1*x1*y2),"Y =",x2*z1+(-1*x1*z2))
-print("_______________________________")
-y=(x2*z1+(-1*x1*z2))/(x2*y1+(-1*x1*y2))
-print(" equ3","Y =",y)
-print("_______________________________")
+
+def calcular_rango(matriz):
+    return np.linalg.matrix_rank(matriz)
+
+
+def obtener_matriz():
+    filas = int(simpledialog.askstring("Input", "Ingrese el número de filas:"))
+    columnas = int(simpledialog.askstring("Input", "Ingrese el número de columnas:"))
+
+    matriz = []
+    for i in range(filas):
+        fila = []
+        for j in range(columnas):
+            elemento = float(simpledialog.askstring("Input", f"Ingrese el elemento ({i + 1},{j + 1}):"))
+            fila.append(elemento)
+        matriz.append(fila)
+
+    matriz = np.array(matriz)
+    return matriz
+
+
+def mostrar_rango():
+    matriz = obtener_matriz()
+    rango = calcular_rango(matriz)
+    messagebox.showinfo("Rango de la Matriz", f"El rango de la matriz es: {rango}")
+
+
+def main():
+    root = tk.Tk()
+    root.withdraw()  # Oculta la ventana principal
+
+    if messagebox.askyesno("Rango de una Matriz", "¿Desea calcular el rango de una matriz?"):
+        mostrar_rango()
+
+
+if __name__ == "__main__":
+    main()

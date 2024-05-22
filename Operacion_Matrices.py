@@ -117,3 +117,4 @@ def operaciones_matrices(root):
     tk.Button(ventana_operaciones, text="Multiplicación de matrices",
               command=lambda: realizar_operacion('multiplicar')).pack(pady=5)
     tk.Button(ventana_operaciones, text="Salir", command=ventana_operaciones.destroy).pack(pady=20)
+
