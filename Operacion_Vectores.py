@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, messagebox, scrolledtext
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -42,6 +42,36 @@ def plot_vectors(vectors, operation):
 
     return fig
 
+def show_steps(vector1, vector2, sum_result, diff_result, dot_result):
+    steps_window = tk.Toplevel()
+    steps_window.title("Pasos de las operaciones")
+    steps_window.geometry("400x500")
+
+    text_area = scrolledtext.ScrolledText(steps_window, width=80, height=20)
+    text_area.pack(pady=20, padx=20, fill=tk.BOTH, expand=True)
+
+    text_area.insert(tk.END, "Vector 1: ")
+    text_area.insert(tk.END, str(vector1) + "\n")
+    text_area.insert(tk.END, "Vector 2: ")
+    text_area.insert(tk.END, str(vector2) + "\n\n")
+
+    text_area.insert(tk.END, "Suma de vectores:\n")
+    for i in range(len(vector1)):
+        text_area.insert(tk.END, f"{vector1[i]} + {vector2[i]} = {sum_result[i]}\n")
+    text_area.insert(tk.END, f"\nResultado: {sum_result}\n\n")
+
+    text_area.insert(tk.END, "Resta de vectores:\n")
+    for i in range(len(vector1)):
+        text_area.insert(tk.END, f"{vector1[i]} - {vector2[i]} = {diff_result[i]}\n")
+    text_area.insert(tk.END, f"\nResultado: {diff_result}\n\n")
+
+    text_area.insert(tk.END, "Producto punto de vectores:\n")
+    for i in range(len(vector1)):
+        text_area.insert(tk.END, f"{vector1[i]} * {vector2[i]} + ")
+    text_area.insert(tk.END, f"= {dot_result}\n")
+
+    text_area.see(tk.END)
+
 def vector_operations(root):
     dimension = simpledialog.askinteger("Dimensión", "Ingrese la dimensión (2 o 3):")
     if dimension not in [2, 3]:
@@ -79,3 +109,6 @@ def vector_operations(root):
 
     label_results = tk.Label(frame_results, text=result_text, justify=tk.LEFT, font=("Arial", 12))
     label_results.pack(pady=10, padx=10)
+
+    # Mostrar los pasos en una nueva ventana
+    show_steps(vector1, vector2, sum_result, diff_result, dot_result)
