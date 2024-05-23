@@ -1,7 +1,6 @@
-import numpy as np
 import tkinter as tk
-from tkinter import messagebox
-
+from tkinter import simpledialog, messagebox
+import numpy as np
 
 class Codificacion:
     def __init__(self):
@@ -19,71 +18,77 @@ class Codificacion:
         while len(matriz) % 3 != 0:
             matriz.append(27)
 
-        matriz_3_filas = [matriz[i:i + 3] for i in range(0, len(matriz), 3)]
-        matriz_transpuesta = np.transpose(matriz_3_filas).tolist()
-
-        self.conteo = len(matriz_3_filas)
-        return matriz_transpuesta, matriz
+        matriz_3_filas = [matriz[i::3] for i in range(3)]
+        self.conteo = len(matriz_3_filas[0])
+        return matriz_3_filas
 
     def multiplicar_matrices(self, matriz1, matriz2):
         resultado = np.dot(matriz1, matriz2).tolist()
         return resultado
 
+    def inversa_matriz(self, matriz):
+        try:
+            matriz_np = np.array(matriz)
+            inversa_np = np.linalg.inv(matriz_np)
+            inversa = inversa_np.tolist()
+            return inversa
+        except np.linalg.LinAlgError:
+            return "No se puede calcular la inversa de una matriz singular."
+
+    def matriz_a_nombre(self, matriz):
+        nombre = ""
+        for j in range(len(matriz[0])):
+            for i in range(3):
+                num = round(matriz[i][j])
+                if num == 27:
+                    nombre += " "
+                else:
+                    nombre += chr(int(num) + 96)
+        return nombre
 
 def cifrado_matrices(root):
-    ventana_cifrado = tk.Toplevel(root)
-    ventana_cifrado.title("Cifrado por Matrices")
-    ventana_cifrado.geometry("700x600")
-
     codificador = Codificacion()
 
-    tk.Label(ventana_cifrado, text="Ingrese un nombre:", font=("Arial", 14)).pack(pady=10)
-    entrada_nombre = tk.Entry(ventana_cifrado, width=30, font=("Arial", 14))
-    entrada_nombre.pack(pady=10)
+    nombre_usuario = simpledialog.askstring("Entrada", "Ingrese un nombre:")
+    matriz_nombre = codificador.nombre_a_matriz(nombre_usuario)
 
-    tk.Label(ventana_cifrado, text="Ingrese una matriz de 3x3 (dejar vacíos para valores cero):",
-             font=("Arial", 14)).pack(pady=10)
-    entradas_matriz = []
-    frame_entradas = tk.Frame(ventana_cifrado)
-    frame_entradas.pack(pady=10)
+    mensaje_matriz_nombre = "\n".join([" ".join(map(str, fila)) for fila in matriz_nombre])
+    messagebox.showinfo("Matriz del nombre", f"Matriz del nombre:\n{mensaje_matriz_nombre}")
+
+    matriz_usuario = []
 
     for i in range(3):
-        fila = []
-        for j in range(3):
-            entrada = tk.Entry(frame_entradas, width=5, font=("Arial", 14))
-            entrada.grid(row=i, column=j, padx=5, pady=5)
-            fila.append(entrada)
-        entradas_matriz.append(fila)
+        fila = simpledialog.askstring("Entrada", f"Ingrese los 3 números de la fila {i + 1}:").split()
+        fila = [int(num) for num in fila]
+        matriz_usuario.append(fila)
 
-    def obtener_valores_y_calcular():
-        nombre_usuario = entrada_nombre.get()
-        if not nombre_usuario:
-            messagebox.showerror("Error", "Debe ingresar un nombre.")
-            return
+    # Convertimos la matriz del usuario en numpy array para poder multiplicar
+    matriz_usuario = np.array(matriz_usuario)
+    matriz_nombre = np.array(matriz_nombre)
 
-        matriz_nombre, nombre_numeros = codificador.nombre_a_matriz(nombre_usuario)
+    resultado_multiplicacion = codificador.multiplicar_matrices(matriz_usuario, matriz_nombre)
 
-        matriz_usuario = []
-        for fila in entradas_matriz:
-            matriz_fila = []
-            for entrada in fila:
-                valor = entrada.get()
-                if valor:
-                    matriz_fila.append(float(valor))
-                else:
-                    matriz_fila.append(0.0)
-            matriz_usuario.append(matriz_fila)
+    mensaje_resultado_multiplicacion = "\n".join([" ".join(map(str, fila)) for fila in resultado_multiplicacion])
+    messagebox.showinfo("Matriz Codificada", f"Matriz Codificada:\n{mensaje_resultado_multiplicacion}")
 
-        matriz_usuario_np = np.array(matriz_usuario)
-        resultado_multiplicacion = codificador.multiplicar_matrices(matriz_usuario_np, matriz_nombre)
+    # Calculamos la inversa de la matriz proporcionada por el usuario
+    inversa_usuario = codificador.inversa_matriz(matriz_usuario)
+    if isinstance(inversa_usuario, str):
+        messagebox.showerror("Error", inversa_usuario)
+        return
 
-        nombre_numeros_str = "Nombre convertido a números:\n" + str(nombre_numeros) + "\n"
-        matriz_nombre_str = "Matriz del nombre (3 filas horizontales):\n" + "\n".join(
-            ["\t".join(map(str, fila)) for fila in matriz_nombre]) + "\n"
-        resultado_str = "Matriz codificada (3 filas horizontales):\n" + "\n".join(
-            ["\t".join([f"{round(elemento, 4)}" for elemento in fila]) for fila in resultado_multiplicacion])
+    mensaje_inversa_usuario = "\n".join([" ".join(map(lambda x: f"{x:.4f}", fila)) for fila in inversa_usuario])
+    messagebox.showinfo("Inversa de la Matriz del Usuario", f"Inversa de la Matriz del Usuario:\n{mensaje_inversa_usuario}")
 
-        messagebox.showinfo("Resultado", nombre_numeros_str + matriz_nombre_str + resultado_str)
+    # Multiplicamos la inversa de la matriz del usuario con la matriz codificada para decodificar
+    resultado_final = codificador.multiplicar_matrices(inversa_usuario, resultado_multiplicacion)
 
-    tk.Button(ventana_cifrado, text="Calcular", command=obtener_valores_y_calcular, font=("Arial", 14)).pack(pady=20)
-    tk.Button(ventana_cifrado, text="Salir", command=ventana_cifrado.destroy, font=("Arial", 14)).pack(pady=10)
+    mensaje_resultado_final = "\n".join([" ".join(map(lambda x: f"{x:.4f}", fila)) for fila in resultado_final])
+    messagebox.showinfo("Matriz Decodificada", f"Matriz Decodificada:\n{mensaje_resultado_final}")
+
+    # Convertimos la matriz decodificada de nuevo a nombre
+    nombre_decodificado = codificador.matriz_a_nombre(resultado_final)
+    messagebox.showinfo("Nombre Decodificado", f"Nombre Decodificado:\n{nombre_decodificado}")
+
+# Puedes probar el código llamando a la función cifrado_matrices en el contexto adecuado
+# cifrado_matrices(tk.Tk())

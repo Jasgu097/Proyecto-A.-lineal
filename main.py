@@ -1,6 +1,6 @@
 import tkinter as tk
 from Operacion_Matrices import operaciones_matrices
-from Matriz_Inversa import matriz_inversa
+from Matriz_Inversa import calcular_inversa
 from Cadena_Markov import transposicion_acumulada
 from Codificacion import cifrado_matrices
 from Eliminacion_Gausiana import rango_matriz
@@ -19,7 +19,7 @@ label_title.pack(pady=20)
 # Botones para cada opción del menú
 buttons = [
     ("Operaciones entre matrices", lambda: operaciones_matrices(root)),
-    ("Matriz inversa", lambda: matriz_inversa(root)),
+    ("Matriz inversa", lambda: calcular_inversa()),
     ("Determinante de una matriz", lambda: determinante_matriz(root)),
     ("Rango de una matriz", lambda: rango_matriz(root)),
     ("Cifrado por matrices", lambda: cifrado_matrices(root)),

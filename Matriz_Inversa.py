@@ -1,50 +1,43 @@
-import numpy as np
 import tkinter as tk
 from tkinter import simpledialog, messagebox
+import numpy as np
 
-def inversa_matriz(matriz):
-    try:
-        matriz_np = np.array(matriz)
-        inversa_np = np.linalg.inv(matriz_np)
-        inversa = inversa_np.tolist()
-        inversa_redondeada = [[round(elemento, 4) for elemento in fila] for fila in inversa]
-        return inversa_redondeada
-    except np.linalg.LinAlgError:
-        return "No se puede calcular la inversa de una matriz singular."
-
-def matriz_inversa(root):
-    ventana_inversa = tk.Toplevel(root)
-    ventana_inversa.title("Calcular Inversa de una Matriz")
-    ventana_inversa.geometry("400x400")
-
-    tk.Label(ventana_inversa, text="Ingrese los elementos de la matriz 3x3:").pack(pady=10)
-
-    entradas = []
-    frame_entradas = tk.Frame(ventana_inversa)
-    frame_entradas.pack(pady=10)
-
+def obtener_matriz():
+    matriz = []
     for i in range(3):
-        fila = []
-        for j in range(3):
-            entrada = tk.Entry(frame_entradas, width=5)
-            entrada.grid(row=i, column=j, padx=5, pady=5)
-            fila.append(entrada)
-        entradas.append(fila)
+        fila = simpledialog.askstring("Entrada", f"Ingrese los 3 números de la fila {i + 1}:").split()
+        fila = [float(num) for num in fila]
+        matriz.append(fila)
+    return matriz
 
-    def calcular_inversa():
-        matriz_usuario = []
-        for fila in entradas:
-            matriz_fila = []
-            for entrada in fila:
-                matriz_fila.append(float(entrada.get()))
-            matriz_usuario.append(matriz_fila)
+def gauss_jordan(matriz):
+    n = len(matriz)
+    augmented_matrix = np.hstack((matriz, np.eye(n)))  # Matriz aumentada [A | I]
 
-        inversa_usuario = inversa_matriz(matriz_usuario)
-        if isinstance(inversa_usuario, str):
-            messagebox.showinfo("Resultado", inversa_usuario)
-        else:
-            resultado_str = "\n".join(["\t".join(map(str, fila)) for fila in inversa_usuario])
-            messagebox.showinfo("Resultado", f"Inversa de la matriz:\n{resultado_str}")
+    for i in range(n):
+        # Pivoteamos
+        pivot_row = max(range(i, n), key=lambda j: abs(augmented_matrix[j, i]))
+        augmented_matrix[[i, pivot_row]] = augmented_matrix[[pivot_row, i]]
 
-    tk.Button(ventana_inversa, text="Calcular Inversa", command=calcular_inversa).pack(pady=20)
-    tk.Button(ventana_inversa, text="Salir", command=ventana_inversa.destroy).pack(pady=10)
+        # Convertimos el pivote en 1
+        pivot = augmented_matrix[i, i]
+        augmented_matrix[i] /= pivot
+
+        # Eliminación gaussiana
+        for j in range(n):
+            if i != j:
+                ratio = augmented_matrix[j, i]
+                augmented_matrix[j] -= ratio * augmented_matrix[i]
+
+    return augmented_matrix[:, n:]  # Obtenemos la parte derecha de la matriz resultante
+
+def calcular_inversa():
+    matriz = obtener_matriz()  # Solicitar la matriz al usuario
+    inversa = gauss_jordan(matriz)  # Calcular la inversa
+    inversa_str = "\n".join(["\t".join(map(str, fila)) for fila in inversa])  # Convertir la inversa a cadena de texto
+    messagebox.showinfo("Inversa de la Matriz", f"La inversa de la matriz es:\n\n{inversa_str}")  # Mostrar la inversa
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.withdraw()
+    calcular_inversa()
