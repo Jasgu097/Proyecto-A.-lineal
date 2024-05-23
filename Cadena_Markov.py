@@ -2,6 +2,14 @@ import numpy as np
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 
+
+def imprimir_matriz(matriz, nombre):
+    print(f"{nombre}:")
+    for fila in matriz:
+        print("\t".join(f"{elemento:.4f}" for elemento in fila))
+    print()
+
+
 def transposicion_acumulada(root):
     ventana_transposicion = tk.Toplevel(root)
     ventana_transposicion.title("Transposición y Multiplicación Acumulada")
@@ -52,16 +60,26 @@ def transposicion_acumulada(root):
             else:
                 matriz2.append([0.0])
 
-        veces = simpledialog.askinteger("Entrada", "Ingrese la cantidad de veces que desea multiplicar la matriz transpuesta por la matriz 3x1:", parent=ventana_transposicion)
+        veces = simpledialog.askinteger("Entrada",
+                                        "Ingrese la cantidad de veces que desea multiplicar la matriz transpuesta por la matriz 3x1:",
+                                        parent=ventana_transposicion)
 
         transpuesta = np.transpose(matriz1)
         resultado = matriz2
-        for _ in range(veces):
+
+        print("Proceso:")
+        imprimir_matriz(matriz1, "Matriz 1")
+        imprimir_matriz(matriz2, "Matriz 2")
+        print("Matriz Transpuesta:")
+        imprimir_matriz(transpuesta, "Transpuesta")
+
+        for i in range(veces):
+            print(f"Iteración {i + 1}:")
             resultado = np.dot(transpuesta, resultado)
+            imprimir_matriz(resultado, "Resultado")
 
         resultado_str = "\n".join([f"{round(fila[0], 4)}" for fila in resultado])
         messagebox.showinfo("Resultado", f"Resultado de la multiplicación acumulada:\n{resultado_str}")
 
     tk.Button(ventana_transposicion, text="Calcular", command=obtener_valores_y_calcular).pack(pady=20)
     tk.Button(ventana_transposicion, text="Salir", command=ventana_transposicion.destroy).pack(pady=10)
-
