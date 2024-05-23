@@ -2,10 +2,8 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import numpy as np
 
-
 def calcular_rango(matriz):
     return np.linalg.matrix_rank(matriz)
-
 
 def obtener_matriz():
     filas = int(simpledialog.askstring("Input", "Ingrese el número de filas:"))
@@ -22,20 +20,13 @@ def obtener_matriz():
     matriz = np.array(matriz)
     return matriz
 
-
 def mostrar_rango():
     matriz = obtener_matriz()
     rango = calcular_rango(matriz)
     messagebox.showinfo("Rango de la Matriz", f"El rango de la matriz es: {rango}")
 
-
-def main():
-    root = tk.Tk()
+def rango_matriz(root):
     root.withdraw()  # Oculta la ventana principal
-
     if messagebox.askyesno("Rango de una Matriz", "¿Desea calcular el rango de una matriz?"):
         mostrar_rango()
-
-
-if __name__ == "__main__":
-    main()
+    root.deiconify()  # Muestra la ventana principal nuevamente

@@ -2,19 +2,19 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import numpy as np
 
+def calcular_determinante(matriz):
+    try:
+        return np.linalg.det(matriz)
+    except np.linalg.LinAlgError:
+        return None
 
-def calcular_rango(matriz):
-    return np.linalg.matrix_rank(matriz)
-
-
-def obtener_matriz():
-    filas = int(simpledialog.askstring("Input", "Ingrese el número de filas:"))
-    columnas = int(simpledialog.askstring("Input", "Ingrese el número de columnas:"))
+def obtener_matriz_cuadrada():
+    n = int(simpledialog.askstring("Input", "Ingrese el tamaño de la matriz (n x n):"))
 
     matriz = []
-    for i in range(filas):
+    for i in range(n):
         fila = []
-        for j in range(columnas):
+        for j in range(n):
             elemento = float(simpledialog.askstring("Input", f"Ingrese el elemento ({i + 1},{j + 1}):"))
             fila.append(elemento)
         matriz.append(fila)
@@ -22,20 +22,16 @@ def obtener_matriz():
     matriz = np.array(matriz)
     return matriz
 
+def mostrar_determinante():
+    matriz = obtener_matriz_cuadrada()
+    determinante = calcular_determinante(matriz)
+    if determinante is not None:
+        messagebox.showinfo("Determinante de la Matriz", f"El determinante de la matriz es: {determinante:.4f}")
+    else:
+        messagebox.showerror("Error", "No se pudo calcular el determinante de la matriz.")
 
-def mostrar_rango():
-    matriz = obtener_matriz()
-    rango = calcular_rango(matriz)
-    messagebox.showinfo("Rango de la Matriz", f"El rango de la matriz es: {rango}")
-
-
-def main():
-    root = tk.Tk()
+def determinante_matriz(root):
     root.withdraw()  # Oculta la ventana principal
-
-    if messagebox.askyesno("Rango de una Matriz", "¿Desea calcular el rango de una matriz?"):
-        mostrar_rango()
-
-
-if __name__ == "__main__":
-    main()
+    if messagebox.askyesno("Determinante de una Matriz", "¿Desea calcular el determinante de una matriz cuadrada?"):
+        mostrar_determinante()
+    root.deiconify()  # Muestra la ventana principal nuevamente

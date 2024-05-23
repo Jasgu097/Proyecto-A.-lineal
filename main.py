@@ -3,10 +3,9 @@ from Operacion_Matrices import operaciones_matrices
 from Matriz_Inversa import matriz_inversa
 from Cadena_Markov import transposicion_acumulada
 from Codificacion import cifrado_matrices
-
-# Funciones dummy para las otras operaciones
-def dummy_function():
-    tk.messagebox.showinfo("Info", "Esta función aún no está implementada.")
+from Eliminacion_Gausiana import rango_matriz
+from Determinante_matriz import determinante_matriz
+from Operacion_Vectores import vector_operations
 
 # Configuración de la ventana principal
 root = tk.Tk()
@@ -21,11 +20,11 @@ label_title.pack(pady=20)
 buttons = [
     ("Operaciones entre matrices", lambda: operaciones_matrices(root)),
     ("Matriz inversa", lambda: matriz_inversa(root)),
-    ("Determinante de una matriz", dummy_function),
-    ("Rango de una matriz", dummy_function),
+    ("Determinante de una matriz", lambda: determinante_matriz(root)),
+    ("Rango de una matriz", lambda: rango_matriz(root)),
     ("Cifrado por matrices", lambda: cifrado_matrices(root)),
     ("Cadenas de Markov", lambda: transposicion_acumulada(root)),
-    ("Operaciones con vectores", dummy_function),
+    ("Operaciones con vectores", lambda: vector_operations(root)),
     ("Salir", root.destroy)
 ]
 
