@@ -2,7 +2,6 @@ import numpy as np
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 
-
 def pedir_matriz(root, filas, columnas):
     ventana_entradas = tk.Toplevel(root)
     ventana_entradas.title(f"Ingresar Matriz de {filas}x{columnas}")
@@ -41,33 +40,69 @@ def pedir_matriz(root, filas, columnas):
 
     return matriz
 
-
 def sumar_matrices(matriz1, matriz2):
-    return [[matriz1[i][j] + matriz2[i][j] for j in range(len(matriz1[0]))] for i in range(len(matriz1))]
-
+    print("Suma de matrices:")
+    print("Matriz 1:")
+    print(mostrar_matriz(matriz1))
+    print("Matriz 2:")
+    print(mostrar_matriz(matriz2))
+    print("Proceso:")
+    resultado = []
+    for i in range(len(matriz1)):
+        fila_resultado = []
+        for j in range(len(matriz1[0])):
+            elemento = matriz1[i][j] + matriz2[i][j]
+            fila_resultado.append(elemento)
+            print(f"{matriz1[i][j]} + {matriz2[i][j]} = {elemento}")
+        resultado.append(fila_resultado)
+        print()
+    return resultado
 
 def restar_matrices(matriz1, matriz2):
-    return [[matriz1[i][j] - matriz2[i][j] for j in range(len(matriz1[0]))] for i in range(len(matriz1))]
-
+    print("Resta de matrices:")
+    print("Matriz 1:")
+    print(mostrar_matriz(matriz1))
+    print("Matriz 2:")
+    print(mostrar_matriz(matriz2))
+    print("Proceso:")
+    resultado = []
+    for i in range(len(matriz1)):
+        fila_resultado = []
+        for j in range(len(matriz1[0])):
+            elemento = matriz1[i][j] - matriz2[i][j]
+            fila_resultado.append(elemento)
+            print(f"{matriz1[i][j]} - {matriz2[i][j]} = {elemento}")
+        resultado.append(fila_resultado)
+        print()
+    return resultado
 
 def multiplicar_matrices(matriz1, matriz2):
     if len(matriz1[0]) != len(matriz2):
         messagebox.showerror("Error",
                              "No se puede realizar la multiplicación. El número de columnas de la matriz 1 no coincide con el número de filas de la matriz 2.")
         return None
+    print("Multiplicación de matrices:")
+    print("Matriz 1:")
+    print(mostrar_matriz(matriz1))
+    print("Matriz 2:")
+    print(mostrar_matriz(matriz2))
+    print("Proceso:")
     resultado = []
     for i in range(len(matriz1)):
         fila_resultado = []
         for j in range(len(matriz2[0])):
-            elemento = sum(matriz1[i][k] * matriz2[k][j] for k in range(len(matriz2)))
+            elemento = 0
+            for k in range(len(matriz2)):
+                elemento += matriz1[i][k] * matriz2[k][j]
+                print(f"{matriz1[i][k]} * {matriz2[k][j]}", end=" ")
             fila_resultado.append(elemento)
+            print(f"= {elemento}")
         resultado.append(fila_resultado)
+        print()
     return resultado
-
 
 def mostrar_matriz(matriz):
     return "\n".join(["\t".join(map(str, fila)) for fila in matriz])
-
 
 def operaciones_matrices(root):
     filas1 = simpledialog.askinteger("Entrada", "Ingrese el número de filas de la matriz 1:", parent=root)
@@ -117,4 +152,3 @@ def operaciones_matrices(root):
     tk.Button(ventana_operaciones, text="Multiplicación de matrices",
               command=lambda: realizar_operacion('multiplicar')).pack(pady=5)
     tk.Button(ventana_operaciones, text="Salir", command=ventana_operaciones.destroy).pack(pady=20)
-
