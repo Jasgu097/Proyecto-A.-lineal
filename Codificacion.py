@@ -90,5 +90,3 @@ def cifrado_matrices(root):
     nombre_decodificado = codificador.matriz_a_nombre(resultado_final)
     messagebox.showinfo("Nombre Decodificado", f"Nombre Decodificado:\n{nombre_decodificado}")
 
-# Puedes probar el código llamando a la función cifrado_matrices en el contexto adecuado
-# cifrado_matrices(tk.Tk())
