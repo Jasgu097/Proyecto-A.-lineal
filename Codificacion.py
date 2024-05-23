@@ -90,3 +90,21 @@ def cifrado_matrices(root):
     nombre_decodificado = codificador.matriz_a_nombre(resultado_final)
     messagebox.showinfo("Nombre Decodificado", f"Nombre Decodificado:\n{nombre_decodificado}")
 
+    explicar_proceso()
+
+def explicar_proceso():
+    print("Explicación del proceso de codificación y decodificación:")
+    print("\n1. Codificación del nombre:")
+    print("   a. Convertimos el nombre en una matriz de 3 filas, donde cada letra se convierte en su valor numérico correspondiente en el alfabeto (a=1, b=2, ..., z=26).")
+    print("   b. Los espacios en blanco se representan con el número 27.")
+    print("   c. Si la longitud del nombre no es múltiplo de 3, se agregan espacios en blanco al final.")
+    print("\n2. Multiplicación de matrices:")
+    print("   a. El usuario proporciona una matriz de 3x3.")
+    print("   b. Multiplicamos la matriz del usuario con la matriz del nombre para obtener la matriz codificada.")
+    print("\n3. Decodificación:")
+    print("   a. Calculamos la inversa de la matriz proporcionada por el usuario.")
+    print("   b. Multiplicamos la inversa de la matriz del usuario con la matriz codificada para obtener la matriz decodificada.")
+    print("   c. Convertimos la matriz decodificada de vuelta a texto, reemplazando los números por letras y los 27 por espacios en blanco.")
+    print("\nEste proceso se basa en la propiedad de que si multiplicamos una matriz por su inversa, obtenemos la matriz identidad. "
+          "Así, al multiplicar la matriz codificada por la inversa de la matriz del usuario, obtenemos la matriz original del nombre.")
+
